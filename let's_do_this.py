@@ -3,9 +3,9 @@ import random
 
 GAME_WIDTH = 700
 GAME_HEIGHT = 700
-SPEED = 50
-SPACE_SIZE = 50
-BODY_PARTS = 3
+SPEED = 80
+SPACE_SIZE = 40
+BODY_PARTS = 2
 SNAKE_COLOR = "blue"
 FOOD_COLOR = "red"
 BACKGROUND_COLOR = "black"
@@ -48,14 +48,26 @@ def next_turn(snake, food):
     snake.coordinates.insert(0, (x, y))
     square = canvas.create_rectangle (x, y, x + SPACE_SIZE, y + SPACE_SIZE, fill = SNAKE_COLOR)
     snake.squares.insert (0, square)
+    
+    if x == food.coordinates[0] and y == food.coordinates [1]:
+        global score
+        score += 1
+        label.config(text="Score:{}".format(score))
+        canvas.delete("food")
+        food = Food ()
 
-    del snake.coordinates[-1]
+    else:
+        del snake.coordinates[-1]
 
-    canvas.delete(snake.squares[-1])
+        canvas.delete(snake.squares[-1])
 
-    del snake.squares[-1]
-
-    window.after(SPEED, next_turn, snake, food)
+        del snake.squares[-1]
+    
+    if check_collisions(snake):
+        game_over()
+    
+    else:
+        window.after(SPEED, next_turn, snake, food)
 
 def change_direction(new_direction):
     global direction
@@ -72,13 +84,24 @@ def change_direction(new_direction):
         if direction != 'up':
             direction = new_direction
 
-def check_collisions():
-    pass
+def check_collisions(snake):
+    x, y = snake.coordinates[0]
 
+    if x < 0 or x >= GAME_WIDTH:
+        return True
+    elif y < 0 or y >= GAME_HEIGHT:
+        print("Game Over, Loser!")
+        return True
+
+    for by_part in snake.coordinates[1:]:
+        if x == BODY_PARTS [0] and y == BODY_PARTS [1]:
+            print("Game Over, Loser!")
+            return True
 
 def game_over():
-    pass
-
+    canvas.delete(ALL)
+    canvas.create_text(canvas.winfo_width()/2, canvas.winfo_height()/2
+                       font=("arial", 70), text="Game Over, Loser!", fill="red", tag="gameover")
 
 window = Tk()
 window.title("Carol's Snake Game")
