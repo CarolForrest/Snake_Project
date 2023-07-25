@@ -26,15 +26,15 @@ class Snake:
 
 class Food:
     def __init__(self):
-        x = random.randint(0, (GAME_WIDTH/SPACE_SIZE)-1) * SPACE_SIZE
-        Y = random.randint(0, (GAME_HEIGHT/SPACE_SIZE)-1) * SPACE_SIZE
+        x = random.randint(0, int(GAME_WIDTH / SPACE_SIZE) - 1) * SPACE_SIZE
+        y = random.randint(0, int(GAME_HEIGHT / SPACE_SIZE) - 1) * SPACE_SIZE
 
         self.coordinates = [x, y]
 
-        canvas.create_oval(x,y, x + SPACE_SIZE, y + SPACE_SIZE, fill=FOOD_COLOR, tag="food")
+        canvas.create_oval(x, y, x + SPACE_SIZE, y + SPACE_SIZE, fill=FOOD_COLOR, tag="food")
 
 def next_turn(snake, food):
-    x,y = snake.coordinates[0]
+    x, y = snake.coordinates[0]
 
     if direction == "up":
         y -= SPACE_SIZE
@@ -93,15 +93,16 @@ def check_collisions(snake):
         print("Game Over, Loser!")
         return True
 
-    for by_part in snake.coordinates[1:]:
-        if x == BODY_PARTS [0] and y == BODY_PARTS [1]:
+    for body_part in snake.coordinates[1:]:
+        if x == body_part[0] and y == body_part[1]:
             print("Game Over, Loser!")
             return True
 
+    return False
+
 def game_over():
     canvas.delete(ALL)
-    canvas.create_text(canvas.winfo_width()/2, canvas.winfo_height()/2
-                       font=("arial", 70), text="Game Over, Loser!", fill="red", tag="gameover")
+    canvas.create_text(canvas.winfo_width()/2, canvas.winfo_height()/2, font=("arial", 50), text="Game Over, Loser!", fill="red", tag="gameover")
 
 window = Tk()
 window.title("Carol's Snake Game")
